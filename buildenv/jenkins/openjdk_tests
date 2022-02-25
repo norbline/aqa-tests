@@ -168,13 +168,7 @@ if (JDK_VERSIONS.size() > 1 || JDK_IMPLS.size() > 1 || PLATFORMS.size() >1 || PL
 
         stage('Queue') {
             if (!areNodesWithLabelOnline(LABEL)) {
-                int ACTIVE_NODE_TIMEOUT = params.ACTIVE_NODE_TIMEOUT ? params.ACTIVE_NODE_TIMEOUT : 0
-                timeout(ACTIVE_NODE_TIMEOUT) {
-                    // If there is available node before timeout
-                    node(LABEL) {
-                        echo "find the node with label as ${env.NODE_NAME}"
-                    }
-                }
+                timeoutCheck()
             } else {
                 // IF no nodes are idle we will check if there is supported virtual agent
                 // When Parallel the race condition could happen. Say the number of multiply jobs is larger than the available nodes the query's result may be delayed and wrong
@@ -207,6 +201,7 @@ if (JDK_VERSIONS.size() > 1 || JDK_IMPLS.size() > 1 || PLATFORMS.size() >1 || PL
 
             if (params.RELATED_NODES) {
                 if (areNodesWithLabelOnline(params.RELATED_NODES)) {
+                    timeoutCheck()
                     node(params.RELATED_NODES) {
                         echo "On RELATED_NODES: ${params.RELATED_NODES}"
                         node(LABEL) {
@@ -233,6 +228,18 @@ if (JDK_VERSIONS.size() > 1 || JDK_IMPLS.size() > 1 || PLATFORMS.size() >1 || PL
     }
 }
 
+def timeoutCheck(){
+    int ACTIVE_NODE_TIMEOUT = params.ACTIVE_NODE_TIMEOUT ? params.ACTIVE_NODE_TIMEOUT : 0
+    timeout(activity: true, ACTIVE_NODE_TIMEOUT) {
+     // If there is available node before timeout
+      node(LABEL) {
+          echo "find the node with label as ${env.NODE_NAME}"
+        }
+     node(params.RELATED_NODES){
+           echo "find the RELATED_NODES ${params.RELATED_NODES}" 
+        }
+    }
+}
 
 def runTest() {
     try {
