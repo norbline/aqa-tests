@@ -230,7 +230,7 @@ if (JDK_VERSIONS.size() > 1 || JDK_IMPLS.size() > 1 || PLATFORMS.size() >1 || PL
 
 def timeoutCheck(){
     int ACTIVE_NODE_TIMEOUT = params.ACTIVE_NODE_TIMEOUT ? params.ACTIVE_NODE_TIMEOUT : 0
-    timeout(activity: true, ACTIVE_NODE_TIMEOUT) {
+    timeout(activity: true, time:30, unit: 'MINUTES') {
      // If there is available node before timeout
       node(LABEL) {
           echo "find the node with label as ${env.NODE_NAME}"
