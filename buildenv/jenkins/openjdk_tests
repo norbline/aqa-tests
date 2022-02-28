@@ -207,7 +207,7 @@ if (JDK_VERSIONS.size() > 1 || JDK_IMPLS.size() > 1 || PLATFORMS.size() >1 || PL
 
             if (params.RELATED_NODES) {
                 if (areNodesWithLabelOnline(params.RELATED_NODES)) {
-                    timeout(activity: true, time: 10, unit: 'MINUTES'){
+                    timeout(activity: true, time: 4, unit: 'MINUTES'){
                         node(params.RELATED_NODES) {
                            echo "On RELATED_NODES: ${params.RELATED_NODES}"
                            node(LABEL) {
